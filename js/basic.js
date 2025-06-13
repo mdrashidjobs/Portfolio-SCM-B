@@ -92,3 +92,31 @@ function isChrome() {
 	return navigator.userAgent.indexOf('Chrome')!=-1;
 
 }
+
+pageSound.volume = 1.0;
+bgMusic.volume = 0.5; // or 1.0 if you want full volume
+
+let musicOn = false;
+musicToggle.addEventListener('click', () => {
+    if (musicOn) {
+        bgMusic.pause();
+        musicToggle.textContent = "🔇 Music Off";
+    } else {
+        bgMusic.play().catch((e) => {
+            console.log("Music play failed:", e);
+        });
+        musicToggle.textContent = "🔊 Music On";
+    }
+    musicOn = !musicOn;
+});
+when: {
+    turning: function() {
+        pageSound.currentTime = 0;
+        pageSound.play().catch((e) => {
+            console.log("Page sound failed:", e);
+        });
+    },
+    turned: function(event, page) {
+        pageSlider.value = page;
+    }
+}
