@@ -236,6 +236,39 @@
     complete: loadApp
   });
 </script>
+<!-- Site Visitor Stats Panel -->
+<div id="visitorStats">
+  <h3>📊 Site Stats</h3>
+  <ul>
+    <li><strong>Online:</strong> <span id="onlineCount">1</span></li>
+    <li><strong>Total Visits:</strong> <span id="totalVisits">loading...</span></li>
+    <li><strong>Your Country:</strong> <span id="userCountry">detecting...</span></li>
+    <li><strong>IP:</strong> <span id="userIP">...</span></li>
+  </ul>
+</div>
+
+
+<script>
+// Dummy Online Count (you can replace with WebSocket or Firebase for real-time)
+document.getElementById('onlineCount').textContent = Math.floor(Math.random() * 5) + 1;
+
+// IP & Location (Using ipapi.co)
+fetch("https://ipapi.co/json/")
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("userCountry").textContent = data.country_name;
+    document.getElementById("userIP").textContent = data.ip;
+  }).catch(() => {
+    document.getElementById("userCountry").textContent = "Unknown";
+    document.getElementById("userIP").textContent = "N/A";
+  });
+
+// Total Visits (LocalStorage-based - reset if cleared)
+let visits = localStorage.getItem("siteVisits") || 0;
+visits++;
+localStorage.setItem("siteVisits", visits);
+document.getElementById("totalVisits").textContent = visits;
+</script>
 
 </body>
 </html>
