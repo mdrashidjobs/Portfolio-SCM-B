@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=1050, user-scalable=no" />
+  <title>Flipbook with Search & Zoom</title>
+
+  <script src="extras/jquery.min.1.7.js"></script>
+  <script src="extras/modernizr.2.5.3.min.js"></script>
+  <script src="lib/turn.js"></script>
+
+  <link rel="stylesheet" href="css/basic.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      background: #f4f4f4;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      width: 260px;
+      height: 100vh;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      gap: 15px;
+    }
+
+    #visitorStats, .sideBox {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 14px;
+    }
+
+    #visitorStats ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    /* PUSH MESSAGE TO BOTTOM */
+    .warningBox {
+      margin-top: auto;
+      color: red;
+      border: 1px solid red;
+      background: #fff5f5;
+      font-weight: bold;
+    }
+
+    /* MAIN PANEL */
+    .main-panel {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 15px;
+      overflow: hidden;
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px auto;
+      width: 100%;
+    }
+
+    button, input[type=range], input[type=text] {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    #pageSlider {
+      width: 180px;
+    }
+
+    /* FLIPBOOK */
+    .flipbook-viewport {
+      margin: 0 auto;
+    }
+
+    /* MAGNIFIER */
+    .magnifier {
+      position: absolute;
+      border: 2px solid #aaa;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      overflow: hidden;
+      display: none;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .magnifier img {
+      position: absolute;
+      transform: scale(2);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+
+  <!-- STATS -->
+  <div id="visitorStats">
+    <h3>📊 Site Stats</h3>
+    <ul>
+      <li><strong>Online:</strong> <span id="onlineCount">1</span></li>
+      <li><strong>Total Visits:</strong> <span id="totalVisits">loading...</span></li>
+      <li><strong>Your Country:</strong> <span id="userCountry">detecting...</span></li>
+      <li><strong>IP:</strong> <span id="userIP">...</span></li>
+    </ul>
+  </div>
+
+  <!-- WARNING MESSAGE (BOTTOM) -->
+  <div class="sideBox warningBox">
+    This book is under development, however the content shown is accurate. We apologize for the inconvenience.
+  </div>
+
+</div>
+
+<!-- MAIN PANEL -->
+<div class="main-panel">
+
+  <div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <button id="firstPage">⏮ First</button>
+      <button id="prevPage">◀ Prev</button>
+      <input type="range" id="pageSlider" min="1" max="40" value="1">
+      <button id="nextPage">Next ▶</button>
+      <button id="lastPage">Last ⏭</button>
+      <input type="text" id="searchInput" placeholder="Page # or Text">
+      <button id="searchBtn">🔍 Search</button>
+      <button id="musicToggle">🔊 Music On</button>
+    </div>
+
+    <!-- FLIPBOOK -->
+    <div class="flipbook-viewport">
+      <div class="container">
+        <div class="flipbook">
+
+        <div style="background-image:url(pages/1.jpg)" data-text="This is page 1."></div>
+        <div style="background-image:url(pages/2.jpg)" data-text="This is page 2."></div>
+        <div style="background-image:url(pages/3.png)" data-text="This is page 3."></div>
+        <div style="background-image:url(pages/4.jpg)" data-text="This is page 4."></div>
+        <div style="background-image:url(pages/5.jpg)" data-text="This is page 5."></div>
+        <div style="background-image:url(pages/6.jpg)" data-text="This is page 6."></div>
+        <div style="background-image:url(pages/7.jpg)" data-text="This is page 7."></div>
+        <div style="background-image:url(pages/8.jpg)" data-text="This is page 8."></div>
+        <div style="background-image:url(pages/9.jpg)" data-text="This is page 9."></div>
+        <div style="background-image:url(pages/10.jpg)" data-text="This is page 10."></div>
+        <div style="background-image:url(pages/11.jpg)" data-text="This is page 11."></div>
+        <div style="background-image:url(pages/12.jpg)" data-text="This is page 12."></div>
+        <div style="background-image:url(pages/13.jpg)" data-text="This is page 13."></div>
+        <div style="background-image:url(pages/14.jpg)" data-text="This is page 14."></div>
+        <div style="background-image:url(pages/15.jpg)" data-text="This is page 15."></div>
+        <div style="background-image:url(pages/16.jpg)" data-text="This is page 16."></div>
+        <div style="background-image:url(pages/17.jpg)" data-text="This is page 17."></div>
+        <div style="background-image:url(pages/18.jpg)" data-text="This is page 18."></div>
+        <div style="background-image:url(pages/19.jpg)" data-text="This is page 19."></div>
+        <div style="background-image:url(pages/20.jpg)" data-text="This is page 20."></div>
+        <div style="background-image:url(pages/21.jpg)" data-text="This is page 21."></div>
+        <div style="background-image:url(pages/22.jpg)" data-text="This is page 22."></div>
+        <div style="background-image:url(pages/23.jpg)" data-text="This is page 23."></div>
+        <div style="background-image:url(pages/24.jpg)" data-text="This is page 24."></div>
+        <div style="background-image:url(pages/25.jpg)" data-text="This is page 25."></div>
+        <div style="background-image:url(pages/26.jpg)" data-text="This is page 26."></div>
+        <div style="background-image:url(pages/27.jpg)" data-text="This is page 27."></div>
+        <div style="background-image:url(pages/28.jpg)" data-text="This is page 28."></div>
+        <div style="background-image:url(pages/29.jpg)" data-text="This is page 29."></div>
+        <div style="background-image:url(pages/30.jpg)" data-text="This is page 30."></div>
+        <div style="background-image:url(pages/31.jpg)" data-text="This is page 31."></div>
+        <div style="background-image:url(pages/32.jpg)" data-text="This is page 32."></div>
+        <div style="background-image:url(pages/33.jpg)" data-text="This is page 33."></div>
+        <div style="background-image:url(pages/34.jpg)" data-text="This is page 34."></div>
+        <div style="background-image:url(pages/35.jpg)" data-text="This is page 35."></div>
+        <div style="background-image:url(pages/36.jpg)" data-text="This is page 36."></div>
+        <div style="background-image:url(pages/37.jpg)" data-text="This is page 37."></div>
+        <div style="background-image:url(pages/38.jpg)" data-text="This is page 38."></div>
+
+        
+
+
+<div style="background-image:url(pages/41.PNG)" data-text="This is page 41."></div>
+ <div style="background-image:url(pages/42.PNG)" data-text="This is page 42."></div>
+
+ <div style="background-image:url(pages/43.PNG)" data-text="This is page 43."></div>
+
+ <div style="background-image:url(pages/43.PNG)" data-text="This is page 43."></div>
+ <div style="background-image:url(pages/44.PNG)" data-text="This is page 44."></div>
+
+ <div style="background-image:url(pages/45.PNG)" data-text="This is page 45."></div>
+ <div style="background-image:url(pages/46.PNG)" data-text="This is page 46."></div>
+
+ <div style="background-image:url(pages/47.PNG)" data-text="This is page 47."></div>
+ <div style="background-image:url(pages/48.PNG)" data-text="This is page 48."></div>
+
+ <div style="background-image:url(pages/49.PNG)" data-text="This is page 49."></div>
+ <div style="background-image:url(pages/50.PNG)" data-text="This is page 50."></div>
+
+
+ <div style="background-image:url(pages/53.PNG)" data-text="This is page 53."></div>
+ <div style="background-image:url(pages/52.PNG)" data-text="This is page 52."></div>
+
+ <div style="background-image:url(pages/54.PNG)" data-text="This is page 54."></div>
+ <div style="background-image:url(pages/55.PNG)" data-text="This is page 55."></div>
+
+
+ <div style="background-image:url(pages/56.PNG)" data-text="This is page 56."></div>
+ <div style="background-image:url(pages/57.PNG)" data-text="This is page 57."></div>
+
+ <div style="background-image:url(pages/58.PNG)" data-text="This is page 58."></div>
+ <div style="background-image:url(pages/59.PNG)" data-text="This is page 59."></div>
+
+ <div style="background-image:url(pages/60.PNG)" data-text="This is page 60."></div>
+ <div style="background-image:url(pages/61.PNG)" data-text="This is page 61."></div>
+
+
+
+
+        <div style="background-image:url(pages/40.jpg)" data-text="This is page 40."></div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MAGNIFIER -->
+<div class="magnifier" id="magnifier">
+  <img id="zoomedImage" src="">
+</div>
+
+<!-- AUDIO -->
+<audio id="pageSound" src="sounds/page-flip.mp3"></audio>
+<audio id="bgMusic" src="sounds/background-music.mp3" autoplay loop></audio>
+
+<script>
+function loadApp() {
+
+  const flipbook = $('.flipbook');
+  const pageSlider = document.getElementById('pageSlider');
+  const pageSound = document.getElementById('pageSound');
+  const bgMusic = document.getElementById('bgMusic');
+  const musicToggle = document.getElementById('musicToggle');
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const magnifier = document.getElementById('magnifier');
+  const zoomedImage = document.getElementById('zoomedImage');
+
+  flipbook.turn({
+    width: 922,
+    height: 600,
+    autoCenter: false,
+    when: {
+      turning: function () {
+        pageSound.currentTime = 0;
+        pageSound.play().catch(()=>{});
+      },
+      turned: function (e, page) {
+        pageSlider.value = page;
+      }
+    }
+  });
+
+  document.getElementById('firstPage').onclick = () => flipbook.turn('page',1);
+  document.getElementById('prevPage').onclick = () => flipbook.turn('previous');
+  document.getElementById('nextPage').onclick = () => flipbook.turn('next');
+  document.getElementById('lastPage').onclick = () => flipbook.turn('page', flipbook.turn('pages'));
+
+  pageSlider.oninput = () => flipbook.turn('page', parseInt(pageSlider.value));
+
+  musicToggle.onclick = () => {
+    if(bgMusic.paused){
+      bgMusic.play();
+      musicToggle.textContent = "🔊 Music On";
+    } else {
+      bgMusic.pause();
+      musicToggle.textContent = "🔇 Music Off";
+    }
+  };
+
+  searchBtn.onclick = () => {
+    const val = searchInput.value.trim();
+    const num = parseInt(val);
+
+    if(!isNaN(num)){
+      flipbook.turn('page', num);
+    } else {
+      const pages = document.querySelectorAll('.flipbook > div');
+      let found = false;
+
+      pages.forEach((p,i)=>{
+        if(p.dataset.text.toLowerCase().includes(val.toLowerCase()) && !found){
+          flipbook.turn('page', i+1);
+          found = true;
+        }
+      });
+
+      if(!found) alert("Not found");
+    }
+  };
+
+  document.querySelectorAll('.flipbook > div').forEach(page=>{
+    page.addEventListener('mouseenter', function(){
+      const bg = this.style.backgroundImage.slice(5,-2);
+      zoomedImage.src = bg;
+      magnifier.style.display = 'block';
+    });
+
+    page.addEventListener('mousemove', function(e){
+      magnifier.style.left = (e.clientX-60)+'px';
+      magnifier.style.top = (e.clientY-60)+'px';
+    });
+
+    page.addEventListener('mouseleave', ()=>magnifier.style.display='none');
+  });
+
+}
+
+yepnope({
+  test: Modernizr.csstransforms,
+  yep: ['lib/turn.js'],
+  nope: ['lib/turn.html4.min.js'],
+  both: ['css/basic.css'],
+  complete: loadApp
+});
+</script>
+
+<script>
+document.getElementById('onlineCount').textContent = Math.floor(Math.random()*5)+1;
+
+fetch("https://ipapi.co/json/")
+.then(r=>r.json())
+.then(d=>{
+  document.getElementById("userCountry").textContent = d.country_name;
+  document.getElementById("userIP").textContent = d.ip;
+})
+.catch(()=>{
+  document.getElementById("userCountry").textContent = "Unknown";
+  document.getElementById("userIP").textContent = "N/A";
+});
+
+let visits = localStorage.getItem("siteVisits") || 0;
+visits++;
+localStorage.setItem("siteVisits", visits);
+document.getElementById("totalVisits").textContent = visits;
+</script>
+
+</body>
+</html>
